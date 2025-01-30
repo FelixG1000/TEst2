@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <title>Spin Wheel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-image: url('img/Casino1.jpg');
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 550px;
+            height: 550px;
+            background-color: rgb(224, 120, 140);
+            border-radius: 50%;
+            border: 15px solid rgb(224, 120, 140);
+            position: absolute;
+            overflow: hidden;
+            transition: 5s;
+        }
+
+        .container div {
+            height: 50%;
+            width: 250px;
+            position: absolute;
+            transform: translateX(-50%);
+            transform-origin: bottom;
+            text-align: center;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            font-size: 50px;
+            font-weight: bold;
+            font-family: Pacifico;
+            color: rgb(0, 0, 0);
+        }
+
+        .element {
+            position: absolute;
+            object-position: top;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            width: 1300px;
+            top: 28px;
+            z-index: 10;
+        }
+
+        .jackpot {
+            position: absolute;
+            display: none;
+            z-index: 9;
+        }
+
+        .container .one {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(198, 231, 236);
+            left: 50%;
+        }
+
+        .container .two {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(173, 130, 183);
+            transform: rotate(45deg);
+            left: 135px;
+        }
+
+        .container .three {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(236, 197, 200);
+            transform: rotate(90deg);
+            left: 135px;
+        }
+
+        .container .four {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(173, 130, 183);
+            transform: rotate(135deg);
+            left: 135px;
+        }
+
+        .container .five {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(245, 175, 106);
+            transform: rotate(180deg);
+            left: 135px;
+        }
+
+        .container .six {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(173, 130, 183);
+            transform: rotate(225deg);
+            left: 135px;
+        }
+
+        .container .seven {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(236, 197, 200);
+            transform: rotate(270deg);
+            left: 135px;
+        }
+
+        .container .eight {
+            clip-path: polygon(100% 0, 50% 100%, 0 0);
+            background-color: rgb(173, 130, 183);
+            transform: rotate(315deg);
+            left: 135px;
+        }
+
+        .container .oneone {
+            clip-path: polygon(55% 0, 50% 100%, 45% 0);
+            background-color: rgb(246, 239, 231);
+            transform: rotate(16.5deg);
+            left: 135px;
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+
+        .container .onetwo {
+            clip-path: polygon(55% 0, 50% 100%, 45% 0);
+            background-color: rgb(246, 239, 231);
+            transform: rotate(343.5deg);
+            left: 135px;
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgb(0, 0, 0);
+            z-index: 8;
+            display: none;
+        }
+
+        .arrow::before {
+            content: "\25BC";
+            font-size: 100px;
+        }
+
+        #spin {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            background-color: #ccc;
+            text-transform: uppercase;
+            border: 8px solid #fff;
+            font-weight: bold;
+            font-size: 20px;
+            color: #a2a2a2;
+            width: 80px;
+            height: 80px;
+            font-family: sans-serif;
+            border-radius: 50%;
+            cursor: pointer;
+            outline: none;
+            letter-spacing: 1px;
+        }
+
+        .popup .overlay {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 4;
+            display: none;
+        }
+
+        .popup .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #fff;
+            border-radius: 10px;
+            width: 350px;
+            height: 280px;
+            z-index: 4;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .popup .close-btn {
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 30px;
+            height: 30px;
+            background: #222;
+            color: #fff;
+            font-size: 25px;
+            font-weight: 600;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+        .popup.active .overlay {
+            display: block;
+        }
+
+        .popup.active .content {
+            transition: all 300ms ease-in-out;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="currency" id="accountBalance" style="color: white; position: absolute; top: 20px; left: 20px;">Account Balance: 100</div>
+    <div class="mb-3" style="position: absolute; top: 60px; left: 20px;">
+        <label for="coinInput" class="form-label" style="color: white;">Set Coins to Play:</label>
+        <input type="number" class="form-control" id="coinInput" placeholder="Enter amount">
+    </div>
+    <button id="spin"></button>
+    <span class="arrow"></span>
+    <img class="element" src="img/element.png">
+    <img class="jackpot" src="img/jackpot.png" style="position: absolute; top: 320px; left: 1305px">
+    <div class="container">
+        <div class="one">5</div>
+        <div class="two">1</div>
+        <div class="three">2</div>
+        <div class="four">1</div>
+        <div class="five">3</div>
+        <div class="six">1</div>
+        <div class="seven">2</div>
+        <div class="eight">1</div>
+        <div class="oneone">XX</div>
+        <div class="onetwo">XX</div>
+    </div>
+    <script>
+        let container = document.querySelector(".container");
+        let jp = document.querySelector(".jackpot");
+        let btn = document.getElementById("spin");
+        let accountBalanceDisplay = document.getElementById('accountBalance');
+        let coinInput = document.getElementById('coinInput');
+        let accountBalance = 100;
+        let no_spins = Math.ceil(Math.random() * 1) * 360 + (360 * 6);
+        let last_spin = Math.ceil(Math.random() * 360) + no_spins; // spin a random degree from 0 to 1000
+        let won_yet = false; // if sth happens and the program resets change this value manually!! example browser closes
+        let jackpot_from = 346; // where begins the jackpot
+        let jackpot_to = 14; // where ends the jackpot (added a bit more just in case it stops in the middle)
+        let audio = new Audio("147239759.mp3");
+
+        document.addEventListener("click", clickchecker);
+
+        window.onkeydown = function (event) {
+            if (event.keyCode === 32 && won_yet == true) {
+                event.preventDefault();
+                won_yet = false;
+                jp.style.display = "none";
+            } else if (event.keyCode === 32 && won_yet == false) {
+                event.preventDefault();
+                won_yet = true;
+                jp.style.display = "flex";
+            }
+        };
+
+        function clickchecker() {
+            btn.click();
+        }
+
+        btn.onclick = function () {
+            const betAmount = parseInt(coinInput.value);
+            if (isNaN(betAmount) || betAmount <= 0 || betAmount > accountBalance) {
+                alert('Please enter a valid number of coins.');
+                return;
+            }
+
+            accountBalance -= betAmount;
+            accountBalanceDisplay.textContent = `Account Balance: ${accountBalance}`;
+
+            // prize has been won
+            btn.disabled = true;
+            audio.play();
+            btn.style.background = '#000000';
+            setTimeout(function () {
+                btn.disabled = false;
+                btn.style.background = '#a2a2a2';
+            }, 5000);
+
+            while (won_yet && (last_spin % 360 > jackpot_from || last_spin % 360 <= jackpot_to)) {
+                last_spin -= 360;
+                last_spin += Math.ceil(Math.random() * 360);
+                console.log("no no no");
+            }
+
+            // winning condition (jackpot)
+            if (!won_yet && ((last_spin) % 360 > jackpot_from || (last_spin) % 360 <= jackpot_to)) {
+                console.log("won");
+            }
+
+            container.style.transform = "rotate(" + last_spin + "deg)"; // rotate the wheel
+            console.log(last_spin % 360);
+
+            no_spins = Math.ceil(Math.random() * 1) * 360 + (360 * 6);
+            last_spin += no_spins + Math.ceil(Math.random() * 360);
+
+            if (won_yet == true) {
+                jp.style.display = "flex";
+            }
+
+            // Update account balance based on the result
+            setTimeout(function () {
+                const result = last_spin % 360;
+                if (result > 346 || result <= 14) {
+                    accountBalance += betAmount * 5; // Jackpot
+                } else if (result > 270 && result <= 346) {
+                    accountBalance += betAmount * 3;
+                } else if (result > 180 && result <= 270) {
+                    accountBalance += betAmount * 2;
+                } else if (result > 90 && result <= 180) {
+                    accountBalance += betAmount * 1;
+                } else if (result > 0 && result <= 90) {
+                    accountBalance += betAmount * 1;
+                }
+                accountBalanceDisplay.textContent = `Account Balance: ${accountBalance}`;
+            }, 5000);
+        };
+
+        accountBalanceDisplay.textContent = `Account Balance: ${accountBalance}`;
+    </script>
+</body>
+</html>
